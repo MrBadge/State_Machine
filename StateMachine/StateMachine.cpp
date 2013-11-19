@@ -49,7 +49,7 @@ int main(int argc, char* argv[])
 	NewMachine.Process(text);
 	std::cout << "Words count: " << NewMachine.Words() << std::endl;
 	std::cout << "Spaces count: " << NewMachine.Spaces() << std::endl;
-	std::cout << "Charecters count: " << NewMachine.Charecters() << std::endl;
+	std::cout << "Characters count: " << NewMachine.Charecters() << std::endl;
 	std::cout << "Numbers count: " << NewMachine.Numbers() << std::endl;
 	std::cin.get();
 	return 0;
