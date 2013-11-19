@@ -17,13 +17,7 @@ public:
 	void FoundWord();
 	void FoundNumber();
 	void FoundCharecter();
-	void FoundSpace();
-	void FoundCharecterAndWord();
-	void FoundSpaceAndWord();
-	void FoundCharecterAndNumber();
-	void FoundSpaceAndNumber();
-	void FoundDoubleCharecter();
-	void FoundCharecterAndSpace();	
+	void FoundSpace();	
 
 	enum States
 	{
@@ -31,7 +25,6 @@ public:
 		State_Word,
 		State_Number,
 		State_NotIntNumber,
-		//State_Charecter,
 		State_Unknown,
 		State_MaybeNotIntNumber
 	};
@@ -59,16 +52,17 @@ private:
 
 	struct Transition
 	{
-		Transition(States beginState, Events event, States goToState, Action action);
+		Transition(States beginState, Events event, States goToState, Action action, Action AdditionalAction = NULL);
 
 		States beginState_;
 		Events event_;
 		States goToState_;
 		Action action_;
+		Action AddAction_;
 	};
 
 	void AddTransition(States fromState, States toState, Events event);
-	void AddTransition(States fromState, States toState, Events event, Action action);
+	void AddTransition(States fromState, States toState, Events event, Action action, Action addAction = NULL);
 
 	typedef std::vector<Transition> TransitionsTable;
 	TransitionsTable Transitions_;

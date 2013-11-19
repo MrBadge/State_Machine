@@ -16,25 +16,25 @@ StateMachineClass::StateMachineClass()
 	AddTransition(State_start, State_Word, Event_Letter);
 	AddTransition(State_start, State_Number, Event_Digit);
 
-	AddTransition(State_Word, State_start, Event_Space, &StateMachineClass::FoundSpaceAndWord);
-	AddTransition(State_Word, State_start, Event_Charecter, &StateMachineClass::FoundCharecterAndWord);
+	AddTransition(State_Word, State_start, Event_Space, &StateMachineClass::FoundSpace, &StateMachineClass::FoundWord);
+	AddTransition(State_Word, State_start, Event_Charecter, &StateMachineClass::FoundCharecter, &StateMachineClass::FoundWord);
 	AddTransition(State_Word, State_start, Event_Unknown, &StateMachineClass::FoundWord);
 	AddTransition(State_Word, State_Number, Event_Digit, &StateMachineClass::FoundWord);
 	AddTransition(State_Word, State_Word, Event_Letter);
 
-	AddTransition(State_Number, State_start, Event_Space, &StateMachineClass::FoundSpaceAndNumber);
-	AddTransition(State_Number, State_start, Event_Charecter, &StateMachineClass::FoundCharecterAndNumber);
+	AddTransition(State_Number, State_start, Event_Space, &StateMachineClass::FoundSpace, &StateMachineClass::FoundNumber);
+	AddTransition(State_Number, State_start, Event_Charecter, &StateMachineClass::FoundCharecter, &StateMachineClass::FoundNumber);
 	AddTransition(State_Number, State_start, Event_Unknown, &StateMachineClass::FoundNumber);
 	AddTransition(State_Number, State_MaybeNotIntNumber, Event_Comma);
 	AddTransition(State_Number, State_Number, Event_Digit);
 
-	AddTransition(State_MaybeNotIntNumber, State_start, Event_Space, &StateMachineClass::FoundCharecterAndSpace);
-	AddTransition(State_MaybeNotIntNumber, State_start, Event_Charecter, &StateMachineClass::FoundDoubleCharecter);
+	AddTransition(State_MaybeNotIntNumber, State_start, Event_Space, &StateMachineClass::FoundCharecter, &StateMachineClass::FoundSpace);
+	AddTransition(State_MaybeNotIntNumber, State_start, Event_Charecter, &StateMachineClass::FoundCharecter, &StateMachineClass::FoundCharecter);
 	AddTransition(State_MaybeNotIntNumber, State_start, Event_Unknown, &StateMachineClass::FoundCharecter);
 	AddTransition(State_MaybeNotIntNumber, State_NotIntNumber, Event_Digit);
 
-	AddTransition(State_NotIntNumber, State_start, Event_Space, &StateMachineClass::FoundSpaceAndNumber);
-	AddTransition(State_NotIntNumber, State_start, Event_Charecter, &StateMachineClass::FoundCharecterAndNumber);
+	AddTransition(State_NotIntNumber, State_start, Event_Space, &StateMachineClass::FoundSpace, &StateMachineClass::FoundNumber);
+	AddTransition(State_NotIntNumber, State_start, Event_Charecter, &StateMachineClass::FoundCharecter, &StateMachineClass::FoundNumber);
 	AddTransition(State_NotIntNumber, State_start, Event_Unknown, &StateMachineClass::FoundNumber);
 	AddTransition(State_NotIntNumber, State_NotIntNumber, Event_Digit);
 }
@@ -49,6 +49,8 @@ void StateMachineClass::ProcessEvent(Events event)
 		{
 			CurrentState_ = transition->goToState_;
 			(this->*(transition->action_))();
+			if (transition->AddAction_ != NULL)
+				(this->*(transition->action_))();
 			return;
 		}
 	}
@@ -90,16 +92,17 @@ void StateMachineClass::AddTransition(States fromState, States toState, Events e
 	Transitions_.push_back(Transition(fromState, event, toState, &StateMachineClass::NothingToDoHere));
 }
 
-void StateMachineClass::AddTransition(States fromState, States toState, Events event, Action action)
+void StateMachineClass::AddTransition(States fromState, States toState, Events event, Action action, Action addAction)
 {
-	Transitions_.push_back(Transition(fromState, event, toState, action));
+	Transitions_.push_back(Transition(fromState, event, toState, action, addAction));
 }
 
-StateMachineClass::Transition::Transition(States baseState, Events event, States targetState, Action action)
+StateMachineClass::Transition::Transition(States baseState, Events event, States targetState, Action action, Action AdditionalAction)
 	:beginState_(baseState), 
 	event_(event), 
 	goToState_(targetState), 
-	action_(action)
+	action_(action),
+	AddAction_(AdditionalAction)
 {
 }
 
@@ -141,41 +144,6 @@ void StateMachineClass::FoundCharecter()
 void StateMachineClass::FoundSpace()
 {
 	++Spaces_;
-}
-
-void StateMachineClass::FoundCharecterAndNumber()
-{
-	++Charecters_;
-	++Numbers_;
-}
-
-void StateMachineClass::FoundCharecterAndSpace()
-{
-	++Charecters_;
-	++Spaces_;
-}
-
-void StateMachineClass::FoundCharecterAndWord()
-{
-	++Charecters_;
-	++Words_;
-}
-
-void StateMachineClass::FoundDoubleCharecter()
-{
-	Charecters_ += 2;
-}
-
-void StateMachineClass::FoundSpaceAndNumber()
-{
-	++Spaces_;
-	++Numbers_;
-}
-
-void StateMachineClass::FoundSpaceAndWord()
-{
-	++Spaces_;
-	++Words_;
 }
 
 void StateMachineClass::NothingToDoHere()
