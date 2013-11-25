@@ -75,13 +75,13 @@ void StateMachineClass::Process(const std::string text)
 		{
 			ProcessEvent(Event_Digit);
 		}
-		else if (current == ',')
-		{
-			ProcessEvent(Event_Comma);
-		}
 		else if (isalpha(current))
 		{
 			ProcessEvent(Event_Letter);
+		}
+		else if (current == ',' && CurrentState_ == State_Number)
+		{
+			ProcessEvent(Event_Comma);
 		}
 		else if (isprint(current))
 		{
