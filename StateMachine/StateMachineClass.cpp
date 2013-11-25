@@ -48,7 +48,8 @@ void StateMachineClass::ProcessEvent(Events event)
 		if (transition->beginState_ == CurrentState_ && transition->event_ == event)
 		{
 			CurrentState_ = transition->goToState_;
-			(this->*(transition->action_))();
+			if (transition->action_ != NULL)
+				(this->*(transition->action_))();
 			if (transition->AddAction_ != NULL)
 				(this->*(transition->AddAction_))();
 			return;
@@ -89,7 +90,7 @@ void StateMachineClass::Process(const std::string text)
 
 void StateMachineClass::AddTransition(States fromState, States toState, Events event)
 {
-	Transitions_.push_back(Transition(fromState, event, toState, &StateMachineClass::NothingToDoHere));
+	Transitions_.push_back(Transition(fromState, event, toState, NULL/*&StateMachineClass::NothingToDoHere*/));
 }
 
 void StateMachineClass::AddTransition(States fromState, States toState, Events event, Action action, Action addAction)
