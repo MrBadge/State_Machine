@@ -27,16 +27,19 @@ StateMachineClass::StateMachineClass()
 	AddTransition(State_Number, State_start, Event_Unknown, &StateMachineClass::FoundNumber);
 	AddTransition(State_Number, State_MaybeNotIntNumber, Event_Comma);
 	AddTransition(State_Number, State_Number, Event_Digit);
+	AddTransition(State_Number, State_Word, Event_Letter, &StateMachineClass::FoundNumber);
 
 	AddTransition(State_MaybeNotIntNumber, State_start, Event_Space, &StateMachineClass::FoundCharecter, &StateMachineClass::FoundSpace);
 	AddTransition(State_MaybeNotIntNumber, State_start, Event_Charecter, &StateMachineClass::FoundCharecter, &StateMachineClass::FoundCharecter);
 	AddTransition(State_MaybeNotIntNumber, State_start, Event_Unknown, &StateMachineClass::FoundCharecter);
 	AddTransition(State_MaybeNotIntNumber, State_NotIntNumber, Event_Digit);
+	AddTransition(State_MaybeNotIntNumber, State_Word, Event_Letter, &StateMachineClass::FoundCharecter, &StateMachineClass::FoundNumber);
 
 	AddTransition(State_NotIntNumber, State_start, Event_Space, &StateMachineClass::FoundSpace, &StateMachineClass::FoundNumber);
 	AddTransition(State_NotIntNumber, State_start, Event_Charecter, &StateMachineClass::FoundCharecter, &StateMachineClass::FoundNumber);
 	AddTransition(State_NotIntNumber, State_start, Event_Unknown, &StateMachineClass::FoundNumber);
 	AddTransition(State_NotIntNumber, State_NotIntNumber, Event_Digit);
+	AddTransition(State_NotIntNumber, State_Word, Event_Letter, &StateMachineClass::FoundCharecter, &StateMachineClass::FoundNumber);
 }
 
 void StateMachineClass::ProcessEvent(Events event)
@@ -72,6 +75,10 @@ void StateMachineClass::Process(const std::string text)
 		{
 			ProcessEvent(Event_Digit);
 		}
+		else if (current == ',')
+		{
+			ProcessEvent(Event_Comma);
+		}
 		else if (isalpha(current))
 		{
 			ProcessEvent(Event_Letter);
@@ -88,10 +95,10 @@ void StateMachineClass::Process(const std::string text)
 	ProcessEvent(Event_Unknown);
 }
 
-void StateMachineClass::AddTransition(States fromState, States toState, Events event)
+/*void StateMachineClass::AddTransition(States fromState, States toState, Events event)
 {
-	Transitions_.push_back(Transition(fromState, event, toState, NULL/*&StateMachineClass::NothingToDoHere*/));
-}
+	Transitions_.push_back(Transition(fromState, event, toState, NULL)); //&StateMachineClass::NothingToDoHere
+}*/
 
 void StateMachineClass::AddTransition(States fromState, States toState, Events event, Action action, Action addAction)
 {

@@ -57,7 +57,7 @@ int main(int argc, char* argv[])
 	std::cout << "Characters count: " << NewMachine.Charecters() << std::endl;
 	std::cout << "Numbers count: " << NewMachine.Numbers() << std::endl;
 	std::cout << "The algorithm took: " << duration << std::endl;
-	std::cin.get();
+	//std::cin.get();
 	return 0;
 }
 

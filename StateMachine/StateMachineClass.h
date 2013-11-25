@@ -52,7 +52,7 @@ private:
 
 	struct Transition
 	{
-		Transition(States beginState, Events event, States goToState, Action action, Action AdditionalAction = NULL);
+		Transition(States beginState, Events event, States goToState, Action action, Action AdditionalAction);
 
 		States beginState_;
 		Events event_;
@@ -61,8 +61,8 @@ private:
 		Action AddAction_;
 	};
 
-	void AddTransition(States fromState, States toState, Events event);
-	void AddTransition(States fromState, States toState, Events event, Action action, Action addAction = NULL);
+	//void AddTransition(States fromState, States toState, Events event);
+	void AddTransition(States fromState, States toState, Events event, Action action = NULL, Action addAction = NULL);
 
 	typedef std::vector<Transition> TransitionsTable;
 	TransitionsTable Transitions_;
