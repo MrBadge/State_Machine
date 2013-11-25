@@ -5,6 +5,7 @@
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <ctime>
 #include "StateMachineClass.h"
 
 void LoadText(const std::string& fileName, std::string& text)
@@ -46,11 +47,16 @@ int main(int argc, char* argv[])
 	{
 		text = argv[1];
 	}
+	std::clock_t start;
+	double duration;
+	start = std::clock();
 	NewMachine.Process(text);
+	duration = (std::clock() - start) / (double)CLOCKS_PER_SEC;
 	std::cout << "Words count: " << NewMachine.Words() << std::endl;
 	std::cout << "Spaces count: " << NewMachine.Spaces() << std::endl;
 	std::cout << "Characters count: " << NewMachine.Charecters() << std::endl;
 	std::cout << "Numbers count: " << NewMachine.Numbers() << std::endl;
+	std::cout << "The algorithm took: " << duration << std::endl;
 	std::cin.get();
 	return 0;
 }

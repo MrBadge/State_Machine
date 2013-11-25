@@ -50,7 +50,7 @@ void StateMachineClass::ProcessEvent(Events event)
 			CurrentState_ = transition->goToState_;
 			(this->*(transition->action_))();
 			if (transition->AddAction_ != NULL)
-				(this->*(transition->action_))();
+				(this->*(transition->AddAction_))();
 			return;
 		}
 	}
